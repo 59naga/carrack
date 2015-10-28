@@ -1,6 +1,6 @@
 {
   "name": "carrack",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "a Promise-based EventEmitter",
 
   "main": "lib",
@@ -17,7 +17,7 @@
     "test": "babel-node node_modules/.bin/isparta cover --report text --report html node_modules/.bin/_mocha",
     "posttest": "eslint src test",
 
-    "report": "npm install codeclimate-test-reporter && codeclimate-test-reporter < coverage/lcov.info",
+    "report": "npm install codeclimate-test-reporter && cat coverage/lcov.info | codeclimate-test-reporter",
     "setup": "npm install zuul browserify babelify envify exorcist",
 
     "localhost": "zuul test --ui mocha-bdd --local 59798 --open",
