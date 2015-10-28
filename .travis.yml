@@ -1,0 +1,44 @@
+# Quick boot options
+sudo: false
+cache:
+  directories:
+    - node_modules
+
+# Ignore version tags
+branches:
+  except:
+    - /^v[0-9]/
+
+# Language options
+language: node_js
+node_js:
+  - '0.12'
+after_success:
+  - 'export TRAVIS_PASSED=true'
+
+# Coverage report
+after_success:
+  - npm install codeclimate-test-reporter --global
+  - codeclimate-test-reporter < coverage/lcov.info
+env:
+  global:
+    # CODECLIMATE_REPO_TOKEN
+    - secure: LGB1eLJLp6Fwok+zW2rwHaEpfLqqYRnzQDzHwUkO25tB0L0swHA8al9qnZNLpaS6lA+IdmFduf6puqlL7JFseFqKTlZpO7buiWUlw1fXrdiENDilKxDUsYl8C9AIgAkE6n+n+9B6f39ThLP0asmEALby7XXRnDt5knfkwJQOFCs73McsBmbdLVweQPCxZ6HIxEviJMFOZneK9LulI2CD1yTMDboGB7/T6XCHbFwYR8r6nhmprq9z/nBuUJ9KoK/fbVFjiaYJllmTYfA2s9nDv+LuUOKm76e0kk2m9nuFkcvqUZHZ1+wlzVtEHXQkldVnheFqFXK6kM+3lh+t987hs63Y9EqTH1UlvKZvkBoK2KaWOV4DFGGSLdP3jJ5IOKyAxp9y5Id9+BMQG2mAbMMiPiYXdqqvaFyCo5mWSXHmsJ3I/5XTd2ca1pmnNXUM8NgHyQ9/h92EE4liXArf88BTqHghwEcfzL6Q9KmADrGkRyaLta759p3UZh1DAQ9bg9l9c6LeefQ9Xzw1E506xHJuW+uYArm5SLkCEvi0dqoP7IKWWr8Ht7AumSIb2UPFGKqrt+c81YtQ7YErueq+otoNMTdgmjq2PeRlLyyzxG3e88f4pBeIfjQdICwdwpJBsGVFRN3UGOcqmFbyUPiMdolV67s9mO3QibBAMp7v/dV24tU=
+    # SAUCE_TOKENS
+    - secure: BX40/X/xgMesx/nxdG3ctEwfSf75upas+XxoL7TV/INoAAFccpHXosxHoRPg30rX1SQh0LFAe9fGn7Wu3udGe3GC7D/1t4fohzAs/7mBqeHj5OEbZxQDTSaZo3+qPWO+YN9gIhR23XlkIYunxB7YOk0G0Jo131i8gGJXh8s6aezxlhh+XD+aamtjgMynCsKXXFG5K/IAQMCfxFniAOsx49ZzphJ86uqyhtPcDE4V4MYb7h3mHIqi84zTNdwAqcW1gyNj5e9TNSr8acQu0gy6RkRx59O2OIDYhLEEdkKdcxI95mD1r/CkotzRQaUxtvSeyOcRQtF393ivarJonLEOFLnHTVEPNHMICj0iyIQlGAV82sssBNBfJxyEd8vpO7JQtDyVWbFCVCzB7+4bxasFV0QBmsyAcki+ihV/5u+M5I+nMMwsMD7y0faACCHs/9wh6a+pDMwUVbtPQYuD2SQwVvamQ/8mMMc5nmw6srwNAplaxhLHRkGzY8Ce5t/q2JUB8yqkgLLps5cn7OahSKPV+fC/9mKreBM8vpU4bZ4SsoFLG0pW9Cr3iOnDYXUOX9+Alr0vCVsSwAncT1kjZW/Cw6i7QkuGaRBz7W8Ycu5v8wj9Af81xzOFHGjPAOsy6tL5UN/+Z9BWV9CKTp0W2HAn63RIOK7NZVt/XL+azTtiBRc=
+    - secure: bLoCLZfGDo8VcWWkNHMf2GELnqDJDjEHsEXlYcfjO3rSBVu3bcWf65Ki2m55NKnHF5S4XhodRIYe9fp2JSqiuacYEE2599PnYhvYzGK3faqE3bw/amaaIoLju//lg9TltEAztMFUZ6ykLp/FYkECAZNLMYSAYeVK93bcce6CWfPJmpSndUenrjG1dkMoOZVugBtxXYmVOa29rAhxzcFU7H0s87xhNefLmdVv5HH5TVJVF+jdBWUuUCaNOuLliqeSqxXZemC/XLu2gVOcRjCrC8CZu7KB8+DPOhUdPEEpfIuVEsjfjCS1HmHpRP3k3Gs0pgU9Cclj3SIcMDhtX/d4KulZ99wcxvD2R4qHg+THNpSNre8UZ1nZN3R8yKI9m1WBPkjhvxcBHsJFj+W2vOutop8F9HUYXxCvLrhZrIIa/PKcg3wphY3KMN73WvtmC4ew+f3sr4JI/giC0lNbcjKOkOKC7OheYP2IDKE+Up2BBIcphtvqbgxY/ivJqAnHlEqwBEvx1a122OmRhpWsBjFyo/5Mc0VKNWhjsm5SNp9+l3VLMzl272fkZLbUAPeRXWB3XfdbjlC87N5klSitjzm0DeIGDSXjvr3IT3V3eIH9xAk1a9hA4DR8mBjWPdLpQlIOAgoMj6hSCQ3e4tk7mVHRHqH0V+GpsRp1UzXYZzjfFd4=
+
+# Npm publish options
+before_deploy:
+  - npm install babel --global
+deploy:
+  provider: npm
+  email: i59naga@icloud.com
+  api_key:
+    secure: niLglGIdnwbG9CoLMKQrXHbZ6uePQ8/B8Y4SVKfBQwvMP7Xu2G9MIWh8pL1HMS1etM+MBVTR09HoA1UJWnroSS18T5o6mR3Y/lCTKFWvze+Bt+Gd+1KlYCeJb8gZ3l1oEjwi8si9/MqqI4P0b7s9l9C4EYmqWJJwI7b/gQRMN6nUL84E/066rY11nuAbEBJmAYrIqxPuBzvGGfAHe9ZXp27q0IsJxqr0oQPhnuIZXd/cu1NIH0tm5VqCU3gQ28owat9pShi+ds1OpRscOP+qOgHTqnR+VpRBKwLyIqLy2RqpnBSXTgRtZyb1M/oVnCS4LdczRfv+A4x4fTCCjvHZGJ6iwr8JUsy2AQlK99hef+MblhaiVldNNGJrmWUKqW40Eq+BWb+K7R7348HT0SoJpI8LXadCiy5pypNU4aTE3bjEx74E3L9RIEkPYlyG+xrnpwd42+OzKCogp16m4R2WZp7tOzZATZw4rQhMYJHSGecWGzRDxgNywvMJC4UiFa0eyeGWOYBlOzJFO3817FwPCav/Mi+chMmSjKE1Mw/c41iyGO6GECTp3fWrRjpd6qSzH08kf2fGnkdaeg4HuXbi7JWYTZo70YMZo5Y8T9XEvrXRSiKmJlGwVcrbGqzwZ/wk1JklrhC6P9FWIay8RSTv7ofPOE/jNVxCIfeUSoosHd4=
+
+# Cloud testing
+after_deploy:
+  - npm install
+  - npm run build-setup
+  - npm run test-cloud

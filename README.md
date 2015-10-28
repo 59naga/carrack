@@ -1,0 +1,82 @@
+# Carrack [![NPM version][npm-image]][npm] [![Build Status][travis-image]][travis] [![Coverage Status][cover-image]][cover] [![Climate Status][climate-image]][climate]
+
+[![Sauce Test Status][sauce-image]][sauce]
+
+> a Promise-based EventEmitter
+
+## Installation
+
+```bash
+$ npm install carrack --save
+```
+
+# API
+
+## class `Carrack`
+
+return a class that inherits the [EventEmitter](https://nodejs.org/api/events.html)
+
+## `Carrack.emit(event[,arg1,arg2...])`
+
+[Calls each of the listeners in order with the supplied arguments][1].
+Receives the Promise of the listeners, and then run the [Promise.all][2].
+
+[1]: https://nodejs.org/api/events.html#events_emitter_emit_event_arg1_arg2
+[2]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all
+
+```js
+import EventEmitter from 'carrack'
+
+let emitter= new EventEmitter
+
+// Add event listeners
+emitter.on('foo',(arg1)=>{
+  return new Promise((resolve,reject)=>{
+    if(arg1==null){
+      resolve('bar')
+    }
+    else{
+      reject(new Error('beep'))
+    }
+  })
+})
+emitter.once('foo',(arg1)=>{
+  return 'baz'// only once
+})
+
+// Dispatch the `foo` event
+emitter.emit('foo')
+.then(values=>{
+  console.log(values[0] === 'bar') // true
+  console.log(values[1] === 'baz') // true
+
+  return emitter.emit('foo')
+})
+.then(values=>{
+  console.log(values[0] === 'bar') // true
+  console.log(values[1] === undefined) // true
+  
+  // expect to be rejected
+  return emitter.emit('foo','kaboom')
+})
+.catch(reason=>{
+  console.error(reason.message === 'beep') // true
+})
+```
+
+License
+---
+[MIT][License]
+
+[License]: http://59naga.mit-license.org/
+
+[sauce-image]: http://soysauce.berabou.me/u/59798/carrack.svg
+[sauce]: https://saucelabs.com/u/59798
+[npm-image]:https://img.shields.io/npm/v/carrack.svg?style=flat-square
+[npm]: https://npmjs.org/package/carrack
+[travis-image]: http://img.shields.io/travis/59naga/carrack.svg?style=flat-square
+[travis]: https://travis-ci.org/59naga/carrack
+[cover-image]: https://img.shields.io/codeclimate/github/59naga/carrack.svg?style=flat-square
+[cover]: https://codeclimate.com/github/59naga/carrack/coverage
+[climate-image]: https://img.shields.io/codeclimate/coverage/github/59naga/carrack.svg?style=flat-square
+[climate]: https://codeclimate.com/github/59naga/carrack

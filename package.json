@@ -1,0 +1,71 @@
+{
+  "name": "carrack",
+  "version": "0.0.0",
+  "description": "a Promise-based EventEmitter",
+
+  "main": "lib",
+  "files": [
+    "lib"
+  ],
+
+  "scripts": {
+    "prepublish": "node -e \"if(process.env.TRAVIS_PASSED){}else{process.exit(1)}\" && npm run compile || echo skip prepublish",
+    "compile": "babel src --out-dir lib",
+
+    "start": "mocha --compilers js:babel/register --bail --watch",
+    
+    "test": "babel-node node_modules/.bin/isparta cover --report text --report html node_modules/.bin/_mocha",
+    "posttest": "eslint src test",
+
+    "setup": "npm install zuul browserify babelify envify exorcist",
+
+    "localhost": "zuul test --ui mocha-bdd --local 59798 --open",
+    "test-cloud": "zuul test",
+
+    "build": "uglifyjs carrack.js --in-source-map carrack.js.map --mangle --compress --output carrack.min.js --source-map carrack.min.js.map",
+    "prebuild": "browserify ./src --transform babelify --transform envify --standalone carrack --debug | exorcist carrack.js.map -b . > carrack.js",
+    "postbuild": "rm carrack.js carrack.js.map && wc -c carrack.min.js"
+  },
+  "config": {
+    "ghooks": {
+      "pre-commit": "npm test"
+    }
+  },
+  
+  "babel": {
+    "optional": [
+      "es7.classProperties",
+      "es7.exportExtensions"
+    ]
+  },
+
+  "dependencies": {
+    "bluebird": "^3.0.1",
+    "object-assign": "^4.0.1"
+  },
+  "devDependencies": {
+    "babel": "^5.8.29",
+    "babel-eslint": "^4.1.3",
+    "eslint": "^1.7.3",
+    "ghooks": "^0.3.2",
+    "isparta": "^3.1.0",
+    "mocha": "^2.3.3",
+    "power-assert": "^1.1.0"
+  },
+
+  "keywords": [
+    "eventemitter",
+    "dispatcher",
+    "promise"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/59naga/carrack.git"
+  },
+  "bugs": {
+    "url": "https://github.com/59naga/carrack/issues"
+  },
+  "homepage": "https://github.com/59naga/carrack#readme",
+  "author": "59naga <i59naga@icloud.com> (http://berabou.me)",
+  "license": "MIT"
+}
