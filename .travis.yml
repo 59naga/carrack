@@ -18,8 +18,7 @@ after_success:
 
 # Coverage report
 after_success:
-  - npm install codeclimate-test-reporter --global
-  - codeclimate-test-reporter < coverage/lcov.info
+  - npm run report
 env:
   global:
     # CODECLIMATE_REPO_TOKEN
@@ -35,10 +34,10 @@ deploy:
   provider: npm
   email: i59naga@icloud.com
   api_key:
-    secure: niLglGIdnwbG9CoLMKQrXHbZ6uePQ8/B8Y4SVKfBQwvMP7Xu2G9MIWh8pL1HMS1etM+MBVTR09HoA1UJWnroSS18T5o6mR3Y/lCTKFWvze+Bt+Gd+1KlYCeJb8gZ3l1oEjwi8si9/MqqI4P0b7s9l9C4EYmqWJJwI7b/gQRMN6nUL84E/066rY11nuAbEBJmAYrIqxPuBzvGGfAHe9ZXp27q0IsJxqr0oQPhnuIZXd/cu1NIH0tm5VqCU3gQ28owat9pShi+ds1OpRscOP+qOgHTqnR+VpRBKwLyIqLy2RqpnBSXTgRtZyb1M/oVnCS4LdczRfv+A4x4fTCCjvHZGJ6iwr8JUsy2AQlK99hef+MblhaiVldNNGJrmWUKqW40Eq+BWb+K7R7348HT0SoJpI8LXadCiy5pypNU4aTE3bjEx74E3L9RIEkPYlyG+xrnpwd42+OzKCogp16m4R2WZp7tOzZATZw4rQhMYJHSGecWGzRDxgNywvMJC4UiFa0eyeGWOYBlOzJFO3817FwPCav/Mi+chMmSjKE1Mw/c41iyGO6GECTp3fWrRjpd6qSzH08kf2fGnkdaeg4HuXbi7JWYTZo70YMZo5Y8T9XEvrXRSiKmJlGwVcrbGqzwZ/wk1JklrhC6P9FWIay8RSTv7ofPOE/jNVxCIfeUSoosHd4=
+    secure: b2AyG90vPkJfJESP+p10jJhf5i3wZRRl91ZxwOZnDLOFhP2wJaoDc+dj90/p6G1WvmOvNpI0nTjE2ew8U7+TL310hWxj4EtbQHpy3i1QPU5u2DfnS9oT7QHPvQt9F6mFWTmjr0yHnd1rdxR58QMlc3GZ9r+COmbfVB4kPDDkm4OcoCtimeWV1ewj1S541GBumeAwn5bpGnAHKO6qXHUW3FO93NuwpdtqlgR9+WmFS5C8qRwjS7DTwdXZ491C8H7H0wVcUonlguD02c20J8uqrWhNgkDoh2oH+JNR6JpwTpdE6OwidJ4z2J5NvY/mbYH0eCHvnl1C0zY2a21mUkYQ5Xf2IwcgIK1GAhfWP2xZ9TsCDa4yPzO0IzIW1TaOfRQwLdbZv1SF5BDEhKEPPyUWUIyM/NpY42FhP8leg72CRtePIK/efPwEx9CK4u/0e2SbcL/BVmsvx1mnAyF+ViHpCJ+KPsEoKm6gTnQxr6KC2QzvSEYDdONJXKTT2w4pak9FKByUYG8lJ704ljaKAckF7lrc7E1kOZGxVbTh6rPuEvgx3bsMS7HABwpUKdZ7XLkDu6xKny/DF4699mkGbC+JdriAlc9bjb/9esCev+5Qq+V9QE35nV1p/TBaoOkLuNQdiUqc+9Q1BOiljmXHNSSwVIzEg5VX69IdZZ3TiU7efbI=
 
 # Cloud testing
 after_deploy:
   - npm install
-  - npm run build-setup
+  - npm run setup
   - npm run test-cloud
