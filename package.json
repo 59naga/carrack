@@ -14,7 +14,7 @@
 
     "start": "mocha --compilers js:babel/register --bail --watch",
     
-    "test": "babel-node node_modules/.bin/isparta cover --report text --report html node_modules/.bin/_mocha",
+    "test": "babel-node node_modules/.bin/isparta cover --report text --report html --report lcov node_modules/.bin/_mocha",
     "posttest": "eslint src test",
 
     "report": "npm install codeclimate-test-reporter && cat coverage/lcov.info | codeclimate-test-reporter",
