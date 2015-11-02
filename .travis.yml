@@ -12,6 +12,7 @@ branches:
 # Language options
 language: node_js
 node_js:
+  - '4.1'
   - '0.12'
 after_success:
   - export TRAVIS_PASSED=true
