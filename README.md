@@ -29,11 +29,11 @@ $ npm install carrack --save
 
 # API
 
-## class `Carrack`
+## class `AsyncEmitter`
 
 return a class that inherits the [EventEmitter](https://nodejs.org/api/events.html)
 
-## `Carrack.emit(event[,arg1,arg2...])`
+## `AsyncEmitter.emit(event[,arg1,arg2...])`
 
 [Calls each of the listeners in order with the supplied arguments][1].
 Receives the Promise of the listeners, and then run the [Promise.all][2].
