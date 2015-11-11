@@ -1,5 +1,5 @@
 // Dependencies
-import EventEmitter from '../src'
+import AsyncEmitter from '../src'
 
 import Promise from 'bluebird'
 import assert from 'power-assert'
@@ -11,7 +11,7 @@ describe('carrack',function(){
   describe('.emit',()=>{
     it('values is passed as an array of values from all the listeners',()=>{
       let emitter
-      emitter= new EventEmitter
+      emitter= new AsyncEmitter
       emitter.once('foo',(data)=>{
         return new Promise((resolve,reject)=>{
           resolve(data)
@@ -34,7 +34,7 @@ describe('carrack',function(){
 
     it('discarding all the other promises whether or not they have resolved',()=>{
       let emitter
-      emitter= new EventEmitter
+      emitter= new AsyncEmitter
       emitter.on('foo',(data)=>{
         return new Promise((resolve,reject)=>{
           resolve(data)

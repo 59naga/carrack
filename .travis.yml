@@ -12,11 +12,13 @@ branches:
 # Language options
 language: node_js
 node_js:
-  - '4.1'
-  - '0.12'
+  - '4.1.2'
+before_install:
+  - npm install npm@3 --global
 after_success:
   - export TRAVIS_PASSED=true
-  - npm run report
+  - npm install codeclimate-test-reporter --global
+  - codeclimate-test-reporter < coverage/lcov.info
 
 # Setup process.env
 env:

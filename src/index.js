@@ -4,7 +4,7 @@ import Promise from 'bluebird'
 
 // Public
 class Carrack extends EventEmitter{
-  once= (event,listener)=>{
+  once(event,listener){
     if(typeof listener!=='function'){
       throw new TypeError('listener must be a function')
     }
@@ -23,7 +23,7 @@ class Carrack extends EventEmitter{
 
     return this
   }
-  emit= (event,...args)=>{
+  emit(event,...args){
     let promises= []
 
     this.listeners(event).forEach(listener=>{

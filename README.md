@@ -1,8 +1,25 @@
-# Carrack [![NPM version][npm-image]][npm] [![Build Status][travis-image]][travis] [![Coverage Status][cover-image]][cover] [![Climate Status][climate-image]][climate]
+# Carrack
 
-[![Sauce Test Status][sauce-image]][sauce]
+<p align="right">
+  <a href="https://npmjs.org/package/carrack">
+    <img src="https://img.shields.io/npm/v/carrack.svg?style=flat-square">
+  </a>
+  <a href="https://travis-ci.org/59naga/carrack">
+    <img src="http://img.shields.io/travis/59naga/carrack.svg?style=flat-square">
+  </a>
+  <a href="https://codeclimate.com/github/59naga/carrack/coverage">
+    <img src="https://img.shields.io/codeclimate/github/59naga/carrack.svg?style=flat-square">
+  </a>
+  <a href="https://codeclimate.com/github/59naga/carrack">
+    <img src="https://img.shields.io/codeclimate/coverage/github/59naga/carrack.svg?style=flat-square">
+  </a>
+</p>
 
-> a Promise-based EventEmitter
+<p align="center">
+  <a href="https://saucelabs.com/u/59798">
+    <img src="http://soysauce.berabou.me/u/59798/carrack.svg">
+  </a>
+</p>
 
 ## Installation
 
@@ -25,9 +42,9 @@ Receives the Promise of the listeners, and then run the [Promise.all][2].
 [2]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all
 
 ```js
-import EventEmitter from 'carrack'
+import AsyncEmitter from 'carrack'
 
-let emitter= new EventEmitter
+let emitter= new AsyncEmitter
 
 // Add event listeners
 emitter.on('foo',(arg1)=>{
@@ -66,17 +83,4 @@ emitter.emit('foo')
 
 License
 ---
-[MIT][License]
-
-[License]: http://59naga.mit-license.org/
-
-[sauce-image]: http://soysauce.berabou.me/u/59798/carrack.svg
-[sauce]: https://saucelabs.com/u/59798
-[npm-image]:https://img.shields.io/npm/v/carrack.svg?style=flat-square
-[npm]: https://npmjs.org/package/carrack
-[travis-image]: http://img.shields.io/travis/59naga/carrack.svg?style=flat-square
-[travis]: https://travis-ci.org/59naga/carrack
-[cover-image]: https://img.shields.io/codeclimate/github/59naga/carrack.svg?style=flat-square
-[cover]: https://codeclimate.com/github/59naga/carrack/coverage
-[climate-image]: https://img.shields.io/codeclimate/coverage/github/59naga/carrack.svg?style=flat-square
-[climate]: https://codeclimate.com/github/59naga/carrack
+[MIT](http://59naga.mit-license.org/)
