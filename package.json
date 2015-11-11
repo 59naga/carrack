@@ -1,6 +1,6 @@
 {
   "name": "carrack",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "a Promise-based EventEmitter",
 
   "engines": {
@@ -20,7 +20,7 @@
     "test": "babel-node node_modules/.bin/isparta cover --report text --report html --report lcov node_modules/.bin/_mocha",
     "posttest": "eslint src test --config 59naga",
 
-    "setup": "npm install zuul browserify babelify envify exorcist",
+    "setup": "npm install zuul browserify babelify@6 envify exorcist",
 
     "localhost": "zuul test --ui mocha-bdd --local 59798 --open",
     "test-cloud": "zuul test",
@@ -44,7 +44,7 @@
   },
   "devDependencies": {
     "babel": "^5.8.29",
-    "babel-eslint": "^4.1.3",
+    "babel-eslint": "^4.1.5",
     "eslint": "^1.7.3",
     "eslint-config-59naga": "0.0.6",
     "ghooks": "^0.3.2",

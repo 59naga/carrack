@@ -31,7 +31,7 @@ env:
 
 # Npm publish options
 before_deploy:
-  - npm install babel --global
+  - npm install babel@5 --global
 deploy:
   provider: npm
   email: i59naga@icloud.com
