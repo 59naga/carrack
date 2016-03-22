@@ -1,9 +1,7 @@
----
-parser: babel-eslint
 
+---
 extends: airbnb/base
-plugins:
-  - mocha
+parser: babel-eslint
 
 env:
   browser: true
@@ -11,10 +9,11 @@ env:
   mocha: true
 
 rules:
-  # e.g: describe('carrack', function() {
-  func-names:
-    - 0
+  valid-jsdoc:
+    - 2
+    - requireParamDescription: false
+      prefer:
+        return: returns
 
-  # e.g: return new Promise((resolve, reject)=>{
-  no-unused-vars:
-    - 0
+  max-len: 1
+  arrow-body-style: 1

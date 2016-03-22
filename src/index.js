@@ -1,9 +1,9 @@
-// Dependencies
-import {EventEmitter} from 'events';
+// dependencies
+import { EventEmitter } from 'events';
 import Promise from 'bluebird';
 
-// Public
-class Carrack extends EventEmitter {
+// @class AsyncEmitter
+export default class AsyncEmitter extends EventEmitter {
   once(event, listener) {
     if (typeof listener !== 'function') {
       throw new TypeError('listener must be a function');
@@ -11,14 +11,18 @@ class Carrack extends EventEmitter {
 
     let fired = false;
 
-    const onceListener = (...args)=>{
+    const onceListener = (...args) => {
       this.removeListener(event, onceListener);
 
       if (fired === false) {
         fired = true;
         return listener(...args);
       }
+      return undefined;
     };
+
+    // https://github.com/nodejs/node/blob/v4.1.2/lib/events.js#L286
+    onceListener.listener = listener;
     this.on(event, onceListener);
 
     return this;
@@ -26,12 +30,10 @@ class Carrack extends EventEmitter {
   emit(event, ...args) {
     const promises = [];
 
-    this.listeners(event).forEach(listener=>{
+    this.listeners(event).forEach(listener => {
       promises.push(listener(...args));
     });
 
     return Promise.all(promises);
   }
 }
-
-export default Carrack;
