@@ -1,4 +1,5 @@
-# Carrack
+Carrack
+---
 
 <p align="right">
   <a href="https://npmjs.org/package/carrack">
@@ -13,6 +14,9 @@
   <a href="https://codeclimate.com/github/59naga/carrack">
     <img src="https://img.shields.io/codeclimate/coverage/github/59naga/carrack.svg?style=flat-square">
   </a>
+  <a href="https://gemnasium.com/59naga/carrack">
+    <img src="https://img.shields.io/gemnasium/59naga/carrack.svg?style=flat-square">
+  </a>
 </p>
 
 <p align="center">
@@ -21,64 +25,77 @@
   </a>
 </p>
 
-## Installation
-
+Installation
+---
 ```bash
 $ npm install carrack --save
 ```
 
-# API
+API
+---
 
-## class `AsyncEmitter`
+class `AsyncEmitter`
+---
 
 return a class that inherits the [EventEmitter](https://nodejs.org/api/events.html)
 
-## `AsyncEmitter.emit(event[,arg1,arg2...])`
+`AsyncEmitter.emit(event[, arg1, arg2...])`
+---
 
-[Calls each of the listeners in order with the supplied arguments][1].
-Receives the Promise of the listeners, and then run the [Promise.all][2].
-
-[1]: https://nodejs.org/api/events.html#events_emitter_emit_event_arg1_arg2
-[2]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all
+`AsyncEmitter.emit` is receive the return value of listeners asynchronously using [Promise.all](http://bluebirdjs.com/docs/api/promise.all.html).
 
 ```js
-import AsyncEmitter from 'carrack'
+import AsyncEmitter from 'carrack';
 
-let emitter= new AsyncEmitter
+const emitter = new AsyncEmitter;
+emitter.on('foo', (action) => action);
+emitter.on('foo', (action) => new Promise((resolve) => {
+  setTimeout(() => resolve(action));
+}));
 
-// Add event listeners
-emitter.on('foo',(arg1)=>{
-  return new Promise((resolve,reject)=>{
-    if(arg1==null){
-      resolve('bar')
-    }
-    else{
-      reject(new Error('beep'))
-    }
-  })
-})
-emitter.once('foo',(arg1)=>{
-  return 'baz'// only once
-})
+return emitter.emit('foo', 'bar').then((values) => {
+  assert(values[0] === 'bar');
+  assert(values[1] === 'bar');
+});
+```
 
-// Dispatch the `foo` event
-emitter.emit('foo')
-.then(values=>{
-  console.log(values[0] === 'bar') // true
-  console.log(values[1] === 'baz') // true
+in addition, exceptions and rejects, the first one is thrown.
 
-  return emitter.emit('foo')
-})
-.then(values=>{
-  console.log(values[0] === 'bar') // true
-  console.log(values[1] === undefined) // true
-  
-  // expect to be rejected
-  return emitter.emit('foo','kaboom')
-})
-.catch(reason=>{
-  console.error(reason.message === 'beep') // true
-})
+```js
+import AsyncEmitter from 'carrack';
+
+const emitter = new AsyncEmitter;
+emitter.on('foo', (action) => action);
+emitter.on('foo', () => Promise.reject(new Error('kabo?')));
+emitter.on('foo', () => new Promise(() => {
+  throw new Error('kaboom');
+}));
+
+emitter.emit('foo').catch((reason) => {
+  console.log(reason.message); // kabo?
+});
+```
+
+`AsyncEmitter.subscribe(event, listener, once = false)` => `unsubscribe()`
+---
+alias for `emitter.on` and `emitter.removeListener`.
+makes it easy to remove the listener when needed.
+
+```js
+import AsyncEmitter from './src';
+
+const emitter = new AsyncEmitter;
+class Component extends React.Component {
+  componentDidMount() {
+    this.unsubscribes = [];
+    this.unsubscribes.push(emitter.subscribe('foo', ::this.handleFoo));
+    this.unsubscribes.push(emitter.subscribe('bar', ::this.handleBar));
+    this.unsubscribes.push(emitter.subscribe('baz', ::this.handleBaz));
+  }
+  componentWillUnmount() {
+    this.unsubscribes.forEach((unsubscribe) => unsubscribe());
+  }
+}
 ```
 
 License
