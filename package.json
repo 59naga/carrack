@@ -9,8 +9,8 @@
   "scripts": {
     "start": "abby test lint-fix",
     "test": "mocha --compilers js:babel-register",
-    "lint": "eslint src test",
-    "lint-fix": "eslint src test --fix",
+    "lint": "eslint *.js src test",
+    "lint-fix": "eslint *.js src test --fix",
     "cover": "abby cover:test, cover:report --no-watch",
     "cover:test": "nyc --reporter=lcov --reporter=text npm test",
     "cover:report": "node -e \"if(process.env.TRAVIS){}else{process.exit(1)}\" && codeclimate-test-reporter < coverage/lcov.info || echo skip coverage report",
@@ -21,6 +21,11 @@
     "build": "uglifyjs carrack.js --in-source-map carrack.js.map --mangle --compress --output carrack.min.js --source-map carrack.min.js.map",
     "prebuild": "browserify ./src --transform babelify --transform envify --standalone carrack --debug | exorcist carrack.js.map -b . > carrack.js",
     "postbuild": "rm carrack.js carrack.js.map && wc -c carrack.min.js"
+  },
+  "abigail": {
+    "plugins": {
+      "watch": "*.js,src/**/*.js,test/**/*.js"
+    }
   },
   "dependencies": {
     "bluebird": "^3.0.1"
