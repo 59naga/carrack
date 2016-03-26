@@ -56,8 +56,8 @@ export default class AsyncEmitter extends EventEmitter {
   * register an event listener, returns the remove function
   *
   * @param {string} event - a event name
-  * @param {function} listener - a event name
-  * @param {boolean} once=false - if true, listener is call only once
+  * @param {function} listener - a listener function
+  * @param {boolean} [once=false] - if true, listener is call only once
   * @returns {function} unsubscribe - the remove function of listener
   */
   subscribe(event, listener, once = false) {
