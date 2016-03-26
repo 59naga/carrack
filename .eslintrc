@@ -1,4 +1,3 @@
-
 ---
 extends: airbnb/base
 parser: babel-eslint
@@ -11,8 +10,7 @@ env:
 rules:
   valid-jsdoc:
     - 2
-    - requireParamDescription: false
-      prefer:
+    - prefer:
         return: returns
 
   max-len: 1
