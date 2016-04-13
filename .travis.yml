@@ -1,3 +1,6 @@
+notifications:
+  email: false
+
 # Quick boot options
 sudo: false
 cache:
@@ -13,6 +16,8 @@ branches:
 language: node_js
 node_js:
   - '4.1.2'
+before_install:
+  - if [[ `npm -v` != 3* ]]; then npm i -g npm@3; fi
 before_script:
   - npm prune
 script:
