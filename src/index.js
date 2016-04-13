@@ -5,13 +5,18 @@ import Promise from 'bluebird';
 // @class AsyncEmitter
 export default class AsyncEmitter extends EventEmitter {
   /**
-  * run the listener to expect a promise
+  * run the listener in parallel
   *
+  * @method emitParallel
+  * @alias emit
   * @param {string} event - a event name
   * @param {any} arguments - a arguments pass to listeners
   * @returns {promise<any>} - the return value of listeners
   */
-  emit(event, ...args) {
+  emit(...args) {
+    return this.emitParallel(...args);
+  }
+  emitParallel(event, ...args) {
     const promises = [];
 
     this.listeners(event).forEach(listener => {
@@ -22,9 +27,29 @@ export default class AsyncEmitter extends EventEmitter {
   }
 
   /**
+  * run the listener in serial
+  *
+  * @method emitSerial
+  * @param {string} event - a event name
+  * @param {any} arguments - a arguments pass to listeners
+  * @returns {promise<any>} - the return value of listeners
+  */
+  emitSerial(event, ...args) {
+    return this.listeners(event).reduce(
+      (promise, listener) => promise.then((values) =>
+        Promise.resolve(listener(...args)).then(
+          (value) => values.concat(value),
+        )
+      ),
+      Promise.resolve([]),
+    );
+  }
+
+  /**
   * emits a 'removeListener' event iff the listener was removed
   * (redefine for inherited method doesn't work)
   *
+  * @method once
   * @param {string} event - a event name
   * @param {function} listener - a listener function
   * @returns {asyncEmitter} this
@@ -55,6 +80,7 @@ export default class AsyncEmitter extends EventEmitter {
   /**
   * register an event listener, returns the remove function
   *
+  * @method subscribe
   * @param {string} event - a event name
   * @param {function} listener - a listener function
   * @param {boolean} [once=false] - if true, listener is call only once

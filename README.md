@@ -39,10 +39,10 @@ class `AsyncEmitter`
 
 return a class that inherits the [EventEmitter](https://nodejs.org/api/events.html)
 
-`AsyncEmitter.emit(event[, arg1, arg2...])`
+`.emit(event[, arg1, arg2...])` / `.emitParallel`
 ---
 
-`AsyncEmitter.emit` is receive the return value of listeners asynchronously using [Promise.all](http://bluebirdjs.com/docs/api/promise.all.html).
+`.emit` is receive the return value of listeners asynchronously using [Promise.all](http://bluebirdjs.com/docs/api/promise.all.html).
 
 ```js
 import AsyncEmitter from 'carrack';
@@ -66,17 +66,52 @@ import AsyncEmitter from 'carrack';
 
 const emitter = new AsyncEmitter;
 emitter.on('foo', (action) => action);
-emitter.on('foo', () => Promise.reject(new Error('kabo?')));
+emitter.on('foo', () => Promise.reject(new Error('beep')));
 emitter.on('foo', () => new Promise(() => {
-  throw new Error('kaboom');
+  throw new Error('boop');
 }));
 
 emitter.emit('foo').catch((reason) => {
-  console.log(reason.message); // kabo?
+  console.log(reason.message); // beep
 });
 ```
 
-`AsyncEmitter.subscribe(event, listener, once = false)` => `unsubscribe()`
+`.emitSerial(event[, arg1, arg2...])`
+---
+
+run the listener in serial.
+if listener returned the exception, will not be executed later listener.
+
+```js
+new AsyncEmitter()
+.on('delay', () => new Promise(resolve => {
+  setTimeout(() => resolve(Date.now()), 100);
+}))
+.on('delay', () => new Promise(resolve => {
+  setTimeout(() => resolve(Date.now()), 100);
+}))
+.on('delay', () => new Promise(resolve => {
+  setTimeout(() => resolve(Date.now()), 100);
+}))
+.emitSerial('delay').then((values) => {
+  console.log(values);
+  // [
+  // 1460566000000
+  // 1460566000100
+  // 1460566000200
+  // ]
+});
+
+new AsyncEmitter()
+.on('foo', () => console.log('bar'))
+.on('foo', () => Promise.reject('abort'))
+.on('foo', () => console.log('baz'))
+.emitSerial('foo');
+// bar
+// Unhandled rejection abort
+```
+
+`.subscribe(event, listener, once = false)` => `unsubscribe()`
 ---
 alias for `emitter.on` and `emitter.removeListener`.
 makes it easy to remove the listener when needed.
