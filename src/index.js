@@ -38,7 +38,10 @@ export default class AsyncEmitter extends EventEmitter {
     return this.listeners(event).reduce(
       (promise, listener) => promise.then((values) =>
         Promise.resolve(listener(...args)).then(
-          (value) => values.concat(value),
+          (value) => {
+            values.push(value);
+            return values;
+          },
         )
       ),
       Promise.resolve([]),

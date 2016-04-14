@@ -141,7 +141,7 @@ describe('carrack', () => {
     });
   });
 
-  describe('issues', () => {
+  describe('issues (regression test)', () => {
     describe('.once', () => {
       it('#3: always the listener should be stopped at the removeListener', async () => {
         const listener = () => 1;
@@ -152,6 +152,18 @@ describe('carrack', () => {
         const values = await emitter.emit('foo');
         assert(values.length === 0);
         assert(values[0] === undefined);
+      });
+    });
+    describe('.emitSerial', () => {
+      it('#4: should not be destroying a listener for the return values', async () => {
+        const delay = 100;
+        const emitter = new AsyncEmitter;
+        emitter.on('delay', () => [1]);
+        emitter.on('delay', () => [2]);
+
+        const values = await emitter.emitSerial('delay', delay);
+        assert(values[0][0] === 1);
+        assert(values[1][0] === 2);
       });
     });
   });
