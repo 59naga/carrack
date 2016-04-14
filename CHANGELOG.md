@@ -1,3 +1,13 @@
+<a name="0.2.1"></a>
+## [0.2.1](https://github.com/59naga/carrack/compare/v0.2.0...v0.2.1) (2016-04-14)
+
+
+### Bug Fixes
+
+* **emitSerial:** fix #4 ([ecdde9d](https://github.com/59naga/carrack/commit/ecdde9d)), closes [#4](https://github.com/59naga/carrack/issues/4)
+
+
+
 <a name="0.2.0"></a>
 # [0.2.0](https://github.com/59naga/carrack/compare/v0.1.0...v0.2.0) (2016-04-13)
 
