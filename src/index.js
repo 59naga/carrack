@@ -49,6 +49,47 @@ export default class AsyncEmitter extends EventEmitter {
   }
 
   /**
+  * run the listener in serial using previous listener return value
+  *
+  * @method emitReduce
+  * @param {string} event - a event name
+  * @param {any} arguments - a arguments pass to listeners
+  * @returns {promise<any>} - the return value of listeners
+  */
+  emitReduce(event, ...args) {
+    return this.emitReduceRun(false, event, args);
+  }
+
+  /**
+  * run the listener in serial and in inverse using previous listener return value
+  *
+  * @method emitReduceRight
+  * @param {string} event - a event name
+  * @param {any} arguments - a arguments pass to listeners
+  * @returns {promise<any>} - the return value of listeners
+  */
+  emitReduceRight(event, ...args) {
+    return this.emitReduceRun(true, event, args);
+  }
+
+  /**
+  * emitReduce/emitReduceRight common processing
+  *
+  * @method emitReduceRun
+  * @param {boolean} inverse - if true, execute listner in inverse
+  * @param {string} event - a event name
+  * @param {any[]} args - a arguments pass to first listener
+  * @returns {any[]} values - the return value of last listener
+  */
+  emitReduceRun(inverse, event, args) {
+    const listeners = inverse ? this.listeners(event).reverse() : this.listeners(event);
+    return listeners.reduce(
+      (promise, listener) => promise.then((prevArgs) => Promise.resolve(listener(...prevArgs))),
+      Promise.resolve(args),
+    );
+  }
+
+  /**
   * emits a 'removeListener' event iff the listener was removed
   * (redefine for inherited method doesn't work)
   *

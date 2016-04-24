@@ -83,6 +83,37 @@ describe('carrack', () => {
     });
   });
 
+  describe('.emitReduce/.emitReduceRight', () => {
+    it('listener should be run serially using previous listener return value', async () => {
+      assert.deepStrictEqual((await (new AsyncEmitter().emitReduce('noop'))), []);
+      assert.deepStrictEqual((await (new AsyncEmitter().emitReduce('noop', 1))), [1]);
+
+      const emitter = new AsyncEmitter;
+      emitter.on('square', (keys, value1) => Promise.resolve([keys.concat(1), value1 * 2]));
+      emitter.on('square', (keys, value1) => Promise.resolve([keys.concat(2), value1 * 2]));
+      emitter.on('square', (keys, value1) => Promise.resolve([keys.concat(3), value1 * 2]));
+
+      assert.deepStrictEqual(
+        (await emitter.emitReduce('square', [], 1)),
+        [[1, 2, 3], 8],
+      );
+      assert.deepStrictEqual(
+        (await emitter.emitReduceRight('square', [], 1)),
+        [[3, 2, 1], 8],
+      );
+    });
+
+    it('if an exception occurs, it should throw an exception only the first one', async () => {
+      const emitter = new AsyncEmitter;
+      emitter.on('square', (keys, value1) => Promise.resolve([keys.concat(1), value1 * 2]));
+      emitter.on('square', () => Promise.reject(new Error('foo')));
+      emitter.on('square', () => Promise.reject(new Error('bar')));
+
+      assert((await rejects(emitter.emitReduce('square', [], 1))).message === 'foo');
+      assert((await rejects(emitter.emitReduceRight('square', [], 1))).message === 'bar');
+    });
+  });
+
   describe('.once', () => {
     it('listeners that have been executed should be removed immediately', async () => {
       const emitter = new AsyncEmitter;

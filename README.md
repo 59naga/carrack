@@ -111,6 +111,33 @@ new AsyncEmitter()
 // Unhandled rejection abort
 ```
 
+`.emitReduce(event[, arg1, arg2...])` / `.emitReduceRight`
+---
+
+run the listener in serial using return value of the previous listener.
+the last return value is always an array.
+
+```js
+const AsyncEmitter = require('./');
+
+const emitter = new AsyncEmitter()
+.on('square', (keys, value1) => Promise.resolve([keys.concat(1), value1 * 2]))
+.on('square', (keys, value1) => Promise.resolve([keys.concat(2), value1 * 2]))
+.on('square', (keys, value1) => Promise.resolve([keys.concat(3), value1 * 2]));
+
+emitter.emitReduce('square', [], 1)
+.then((args) => {
+  console.log(args[0], args[1]);
+  // [ 1, 2, 3 ] 8
+});
+
+emitter.emitReduceRight('square', [], 1)
+.then((args) => {
+  console.log(args[0], args[1]);
+  // [ 3, 2, 1 ] 8
+});
+```
+
 `.subscribe(event, listener, once = false)` => `unsubscribe()`
 ---
 alias for `emitter.on` and `emitter.removeListener`.

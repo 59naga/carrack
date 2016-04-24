@@ -13,7 +13,7 @@
     "cover": "abby cover:* --parse serial",
     "cover:test": "nyc --reporter=lcov --reporter=text mocha",
     "cover:report": "npm-if TRAVIS \"codeclimate-test-reporter < coverage/lcov.info\"",
-    "compile": "babel -V && babel src --out-dir lib",
+    "compile": "babel -V && babel src --out-dir lib --source-maps",
     "setup": "npm install zuul browserify babelify envify exorcist",
     "localhost": "zuul test --ui mocha-bdd --local 59798 --open",
     "test-cloud": "zuul test",
