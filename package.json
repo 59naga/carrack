@@ -17,7 +17,6 @@
     "setup": "npm install zuul browserify babelify envify exorcist",
     "localhost": "zuul test --ui mocha-bdd --local 59798 --open",
     "test-cloud": "zuul test",
-    "version": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md",
     "postversion": "git push --follow-tags && conventional-github-releaser -p angular -r 0"
   },
   "abigail": {
