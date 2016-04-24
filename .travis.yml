@@ -15,7 +15,9 @@ branches:
 # Language options
 language: node_js
 node_js:
-  - '4.1.2'
+  - '0'
+  - 4
+  - 5
 before_install:
   - if [[ `npm -v` != 3* ]]; then npm i -g npm@3; fi
 before_script:
@@ -42,6 +44,8 @@ deploy:
   email: i59naga@icloud.com
   api_key:
     secure: b2AyG90vPkJfJESP+p10jJhf5i3wZRRl91ZxwOZnDLOFhP2wJaoDc+dj90/p6G1WvmOvNpI0nTjE2ew8U7+TL310hWxj4EtbQHpy3i1QPU5u2DfnS9oT7QHPvQt9F6mFWTmjr0yHnd1rdxR58QMlc3GZ9r+COmbfVB4kPDDkm4OcoCtimeWV1ewj1S541GBumeAwn5bpGnAHKO6qXHUW3FO93NuwpdtqlgR9+WmFS5C8qRwjS7DTwdXZ491C8H7H0wVcUonlguD02c20J8uqrWhNgkDoh2oH+JNR6JpwTpdE6OwidJ4z2J5NvY/mbYH0eCHvnl1C0zY2a21mUkYQ5Xf2IwcgIK1GAhfWP2xZ9TsCDa4yPzO0IzIW1TaOfRQwLdbZv1SF5BDEhKEPPyUWUIyM/NpY42FhP8leg72CRtePIK/efPwEx9CK4u/0e2SbcL/BVmsvx1mnAyF+ViHpCJ+KPsEoKm6gTnQxr6KC2QzvSEYDdONJXKTT2w4pak9FKByUYG8lJ704ljaKAckF7lrc7E1kOZGxVbTh6rPuEvgx3bsMS7HABwpUKdZ7XLkDu6xKny/DF4699mkGbC+JdriAlc9bjb/9esCev+5Qq+V9QE35nV1p/TBaoOkLuNQdiUqc+9Q1BOiljmXHNSSwVIzEg5VX69IdZZ3TiU7efbI=
+  on:
+    node: 4
 
 # Cloud testing
 after_deploy:

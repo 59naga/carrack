@@ -8,8 +8,8 @@
   ],
   "env": {
     "development": {
-      "plugins": [
-        "espower"
+      "presets": [
+        "power-assert"
       ]
     }
   }

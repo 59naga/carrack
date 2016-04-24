@@ -1,7 +1,6 @@
 // dependencies
-import 'babel-polyfill';
 import Promise from 'bluebird';
-import assert from 'power-assert';
+import assert from 'assert';
 import { throws, rejects } from 'assert-exception';
 
 // target
