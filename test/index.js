@@ -1,3 +1,7 @@
+// polyfill not available in zuul if wrote mocha.opts
+import 'babel-polyfill';
+import 'assert-polyfill';
+
 // dependencies
 import Promise from 'bluebird';
 import assert from 'assert';
