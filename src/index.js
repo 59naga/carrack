@@ -84,7 +84,10 @@ export default class AsyncEmitter extends EventEmitter {
   emitReduceRun(inverse, event, args) {
     const listeners = inverse ? this.listeners(event).reverse() : this.listeners(event);
     return listeners.reduce(
-      (promise, listener) => promise.then((prevArgs) => Promise.resolve(listener(...prevArgs))),
+      (promise, listener) => promise.then((prevArgs) => {
+        const currentArgs = prevArgs instanceof Array ? prevArgs : [prevArgs];
+        return Promise.resolve(listener(...currentArgs));
+      }),
       Promise.resolve(args),
     );
   }

@@ -125,14 +125,14 @@ const emitter = new AsyncEmitter()
 ;
 
 emitter.emitReduce('square', [], 2)
-.then((args) => {
-  console.log(args[0], args[1]);
+.spread((keys, value) => {
+  console.log(keys, value);
   // [ 1, 2, 3 ] 256
 });
 
 emitter.emitReduceRight('square', [], 2)
-.then((args) => {
-  console.log(args[0], args[1]);
+.spread((keys, value) => {
+  console.log(keys, value);
   // [ 3, 2, 1 ] 256
 });
 ```

@@ -106,6 +106,17 @@ describe('carrack', () => {
       );
     });
 
+    it('if listener returns a non-array, it should be passed on correctly value to the next listener', async () => {
+      const emitter = new AsyncEmitter;
+      emitter.on('normal', () => null);
+      emitter.on('normal', () => []);
+
+      assert.deepStrictEqual(
+        (await emitter.emitReduce('normal')),
+        [],
+      );
+    });
+
     it('if an exception occurs, it should throw an exception only the first one', async () => {
       const emitter = new AsyncEmitter;
       emitter.on('square', (keys, value1) => Promise.resolve([keys.concat(1), value1 * 2]));
