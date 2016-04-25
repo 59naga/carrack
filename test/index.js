@@ -108,12 +108,12 @@ describe('carrack', () => {
 
     it('if listener returns a non-array, it should be passed on correctly value to the next listener', async () => {
       const emitter = new AsyncEmitter;
-      emitter.on('normal', () => null);
-      emitter.on('normal', () => []);
+      emitter.on('normal', () => 1);
+      emitter.on('normal', (value) => [value]);
 
       assert.deepStrictEqual(
         (await emitter.emitReduce('normal')),
-        [],
+        [1],
       );
     });
 
