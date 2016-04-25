@@ -39,7 +39,7 @@ class `AsyncEmitter`
 
 return a class that inherits the [EventEmitter](https://nodejs.org/api/events.html)
 
-`.emit(event[, arg1, arg2...])` / `.emitParallel`
+`.emit(event[, arg1, arg2...])` / `.emitParallel` -> `Promise<values>`
 ---
 
 `.emit` is receive the return value of listeners asynchronously using [Promise.all](http://bluebirdjs.com/docs/api/promise.all.html).
@@ -47,36 +47,29 @@ return a class that inherits the [EventEmitter](https://nodejs.org/api/events.ht
 ```js
 import AsyncEmitter from 'carrack';
 
-const emitter = new AsyncEmitter;
-emitter.on('foo', (action) => action);
-emitter.on('foo', (action) => new Promise((resolve) => {
-  setTimeout(() => resolve(action));
-}));
-
-return emitter.emit('foo', 'bar').then((values) => {
-  assert(values[0] === 'bar');
-  assert(values[1] === 'bar');
-});
+new AsyncEmitter()
+  .on('foo', (action) => action)
+  .on('foo', (action) => new Promise((resolve) => {
+    setTimeout(() => resolve(action));
+  }))
+  .emit('foo', 'bar')
+  .then(console.log.bind(console)); // ['bar', 'bar']
 ```
 
 in addition, exceptions and rejects, the first one is thrown.
 
 ```js
-import AsyncEmitter from 'carrack';
-
-const emitter = new AsyncEmitter;
-emitter.on('foo', (action) => action);
-emitter.on('foo', () => Promise.reject(new Error('beep')));
-emitter.on('foo', () => new Promise(() => {
-  throw new Error('boop');
-}));
-
-emitter.emit('foo').catch((reason) => {
-  console.log(reason.message); // beep
-});
+new AsyncEmitter()
+  .on('foo', (action) => action)
+  .on('foo', () => Promise.reject(new Error('beep')))
+  .on('foo', () => new Promise(() => {
+    throw new Error('boop');
+  }))
+  .emit('foo')
+  .catch(console.log.bind(console)); // [Error: beep]
 ```
 
-`.emitSerial(event[, arg1, arg2...])`
+`.emitSerial(event[, arg1, arg2...])` -> `Promise<values>`
 ---
 
 run the listener in serial.
@@ -84,34 +77,33 @@ if listener returned the exception, will not be executed later listener.
 
 ```js
 new AsyncEmitter()
-.on('delay', () => new Promise(resolve => {
-  setTimeout(() => resolve(Date.now()), 100);
-}))
-.on('delay', () => new Promise(resolve => {
-  setTimeout(() => resolve(Date.now()), 100);
-}))
-.on('delay', () => new Promise(resolve => {
-  setTimeout(() => resolve(Date.now()), 100);
-}))
-.emitSerial('delay').then((values) => {
-  console.log(values);
+  .on('delay', () => new Promise(resolve => {
+    setTimeout(() => resolve(Date.now()), 100);
+  }))
+  .on('delay', () => new Promise(resolve => {
+    setTimeout(() => resolve(Date.now()), 100);
+  }))
+  .on('delay', () => new Promise(resolve => {
+    setTimeout(() => resolve(Date.now()), 100);
+  }))
+  .emitSerial('delay')
+  .then(console.log.bind(console));
   // [
-  // 1460566000000
-  // 1460566000100
-  // 1460566000200
+  //   1460566000100,
+  //   1460566000200,
+  //   1460566000300
   // ]
-});
 
 new AsyncEmitter()
-.on('foo', () => console.log('bar'))
-.on('foo', () => Promise.reject('abort'))
-.on('foo', () => console.log('baz'))
-.emitSerial('foo');
+  .on('foo', () => console.log('bar'))
+  .on('foo', () => Promise.reject('abort'))
+  .on('foo', () => console.log('baz'))
+  .emitSerial('foo');
 // bar
 // Unhandled rejection abort
 ```
 
-`.emitReduce(event[, arg1, arg2...])` / `.emitReduceRight`
+`.emitReduce(event[, arg1, arg2...])` / `.emitReduceRight` -> `Promise<value>`
 ---
 
 run the listener in serial using return value of the previous listener.
@@ -119,22 +111,24 @@ the last return value is always an array.
 
 ```js
 const emitter = new AsyncEmitter()
-.on('square', (keys, value) => Promise.resolve([keys.concat(1), value * value]))
-.on('square', (keys, value) => Promise.resolve([keys.concat(2), value * value]))
-.on('square', (keys, value) => Promise.resolve([keys.concat(3), value * value]))
+  .on('square', (keys, value) => Promise.resolve([keys.concat(1), value * value]))
+  .on('square', (keys, value) => Promise.resolve([keys.concat(2), value * value]))
+  .on('square', (keys, value) => Promise.resolve([keys.concat(3), value * value]))
 ;
 
-emitter.emitReduce('square', [], 2)
-.spread((keys, value) => {
-  console.log(keys, value);
-  // [ 1, 2, 3 ] 256
-});
+emitter
+  .emitReduce('square', [], 2)
+  .spread((keys, value) => {
+    console.log(keys, value);
+    // [ 1, 2, 3 ] 256
+  });
 
-emitter.emitReduceRight('square', [], 2)
-.spread((keys, value) => {
-  console.log(keys, value);
-  // [ 3, 2, 1 ] 256
-});
+emitter
+  .emitReduceRight('square', [], 2)
+  .spread((keys, value) => {
+    console.log(keys, value);
+    // [ 3, 2, 1 ] 256
+  });
 ```
 
 `.subscribe(event, listener, once = false)` => `unsubscribe()`
@@ -143,9 +137,9 @@ alias for `emitter.on` and `emitter.removeListener`.
 makes it easy to remove the listener when needed.
 
 ```js
-import AsyncEmitter from './src';
-
+// ...
 const emitter = new AsyncEmitter;
+
 class Component extends React.Component {
   componentDidMount() {
     this.unsubscribes = [];
