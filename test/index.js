@@ -92,17 +92,17 @@ describe('carrack', () => {
       assert.deepStrictEqual((await (new AsyncEmitter().emitReduce('noop', 1))), [1]);
 
       const emitter = new AsyncEmitter;
-      emitter.on('square', (keys, value1) => Promise.resolve([keys.concat(1), value1 * 2]));
-      emitter.on('square', (keys, value1) => Promise.resolve([keys.concat(2), value1 * 2]));
-      emitter.on('square', (keys, value1) => Promise.resolve([keys.concat(3), value1 * 2]));
+      emitter.on('square', (keys, value) => Promise.resolve([keys.concat(1), value * value]));
+      emitter.on('square', (keys, value) => Promise.resolve([keys.concat(2), value * value]));
+      emitter.on('square', (keys, value) => Promise.resolve([keys.concat(3), value * value]));
 
       assert.deepStrictEqual(
-        (await emitter.emitReduce('square', [], 1)),
-        [[1, 2, 3], 8],
+        (await emitter.emitReduce('square', [], 2)),
+        [[1, 2, 3], 256],
       );
       assert.deepStrictEqual(
-        (await emitter.emitReduceRight('square', [], 1)),
-        [[3, 2, 1], 8],
+        (await emitter.emitReduceRight('square', [], 2)),
+        [[3, 2, 1], 256],
       );
     });
 

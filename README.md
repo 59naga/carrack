@@ -118,23 +118,22 @@ run the listener in serial using return value of the previous listener.
 the last return value is always an array.
 
 ```js
-const AsyncEmitter = require('./');
-
 const emitter = new AsyncEmitter()
-.on('square', (keys, value1) => Promise.resolve([keys.concat(1), value1 * 2]))
-.on('square', (keys, value1) => Promise.resolve([keys.concat(2), value1 * 2]))
-.on('square', (keys, value1) => Promise.resolve([keys.concat(3), value1 * 2]));
+.on('square', (keys, value) => Promise.resolve([keys.concat(1), value * value]))
+.on('square', (keys, value) => Promise.resolve([keys.concat(2), value * value]))
+.on('square', (keys, value) => Promise.resolve([keys.concat(3), value * value]))
+;
 
-emitter.emitReduce('square', [], 1)
+emitter.emitReduce('square', [], 2)
 .then((args) => {
   console.log(args[0], args[1]);
-  // [ 1, 2, 3 ] 8
+  // [ 1, 2, 3 ] 256
 });
 
-emitter.emitReduceRight('square', [], 1)
+emitter.emitReduceRight('square', [], 2)
 .then((args) => {
   console.log(args[0], args[1]);
-  // [ 3, 2, 1 ] 8
+  // [ 3, 2, 1 ] 256
 });
 ```
 
