@@ -5,7 +5,22 @@ import Promise from 'bluebird';
 // @class AsyncEmitter
 export default class AsyncEmitter extends EventEmitter {
   /**
-  * run the listener in parallel
+  * run the listener as Promise
+  *
+  * @param {function} listener - a code block
+  * @param {any[]} args - a event arguments
+  * @returns {promise} - the return value or exception
+  */
+  toPromise(listener, args) {
+    try {
+      return Promise.resolve(listener(...args));
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  /**
+  * run the listeners in parallel
   *
   * @method emitParallel
   * @alias emit
@@ -17,14 +32,14 @@ export default class AsyncEmitter extends EventEmitter {
     const promises = [];
 
     this.listeners(event).forEach(listener => {
-      promises.push(listener(...args));
+      promises.push(this.toPromise(listener, args));
     });
 
     return Promise.all(promises);
   }
 
   /**
-  * run the listener in serial
+  * run the listeners in serial
   *
   * @method emitSerial
   * @param {string} event - a event name
@@ -34,7 +49,7 @@ export default class AsyncEmitter extends EventEmitter {
   emitSerial(event, ...args) {
     return this.listeners(event).reduce(
       (promise, listener) => promise.then((values) =>
-        Promise.resolve(listener(...args)).then(
+        this.toPromise(listener, args).then(
           (value) => {
             values.push(value);
             return values;
@@ -46,7 +61,7 @@ export default class AsyncEmitter extends EventEmitter {
   }
 
   /**
-  * run the listener in serial using previous listener return value
+  * run the listeners in serial using previous listener return value
   *
   * @method emitReduce
   * @param {string} event - a event name
@@ -58,7 +73,7 @@ export default class AsyncEmitter extends EventEmitter {
   }
 
   /**
-  * run the listener in serial and in inverse using previous listener return value
+  * run the listeners in serial and in inverse using previous listener return value
   *
   * @method emitReduceRight
   * @param {string} event - a event name
@@ -83,14 +98,14 @@ export default class AsyncEmitter extends EventEmitter {
     return listeners.reduce(
       (promise, listener) => promise.then((prevArgs) => {
         const currentArgs = prevArgs instanceof Array ? prevArgs : [prevArgs];
-        return Promise.resolve(listener(...currentArgs));
+        return this.toPromise(listener, currentArgs);
       }),
       Promise.resolve(args),
     );
   }
 
   /**
-  * emits a 'removeListener' event iff the listener was removed
+  * emit a 'removeListener' event iff the listener was removed
   * (redefine for inherited method doesn't work)
   *
   * @method once

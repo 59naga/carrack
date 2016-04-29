@@ -47,6 +47,15 @@ describe('carrack', () => {
 
       assert((await rejects(emitter.emitParallel('foo', 'bar'))).message === 'boop');
     });
+
+    it('if throws exception, it should be handled as reject', async () => {
+      const emitter = new AsyncEmitter;
+      emitter.on('foo', (action) => action);
+      emitter.on('foo', () => { throw new Error('boop'); });
+      emitter.on('foo', () => Promise.reject(new Error('beep')));
+
+      assert((await rejects(emitter.emitParallel('foo', 'bar'))).message === 'boop');
+    });
   });
 
   describe('.emitSerial', () => {
