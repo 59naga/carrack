@@ -12,7 +12,7 @@ import AsyncEmitter from '../src';
 
 // specs
 describe('carrack', () => {
-  describe('.emit / .emitParallel', () => {
+  describe('.emitParallel', () => {
     it('should receive the return value of listeners asynchronously', async () => {
       const emitter = new AsyncEmitter;
       emitter.on('foo', (action) => action);
@@ -20,7 +20,7 @@ describe('carrack', () => {
         setTimeout(() => resolve(action));
       }));
 
-      const values = await emitter.emit('foo', 'bar');
+      const values = await emitter.emitParallel('foo', 'bar');
       assert(values.length === 2);
       assert(values[0] === 'bar');
       assert(values[1] === 'bar');
@@ -34,7 +34,7 @@ describe('carrack', () => {
       }));
       emitter.on('foo', () => Promise.reject(new Error('boop')));
 
-      assert((await rejects(emitter.emit('foo', 'bar'))).message === 'beep');
+      assert((await rejects(emitter.emitParallel('foo', 'bar'))).message === 'beep');
     });
 
     it('if the promise was rejected, it should throw only the first of the reject', async () => {
@@ -45,7 +45,7 @@ describe('carrack', () => {
         throw new Error('beep');
       }));
 
-      assert((await rejects(emitter.emit('foo', 'bar'))).message === 'boop');
+      assert((await rejects(emitter.emitParallel('foo', 'bar'))).message === 'boop');
     });
   });
 
@@ -134,11 +134,11 @@ describe('carrack', () => {
       emitter.once('foo', (action) => action);
 
       let values;
-      values = await emitter.emit('foo', 'bar');
+      values = await emitter.emitParallel('foo', 'bar');
       assert(values.length === 1);
       assert(values[0] === 'bar');
 
-      values = await emitter.emit('foo', 'bar');
+      values = await emitter.emitParallel('foo', 'bar');
       assert(values.length === 0);
       assert(values[0] === undefined);
     });
@@ -157,13 +157,13 @@ describe('carrack', () => {
       const unsubcribe = emitter.subscribe('foo', (action) => action);
 
       let values;
-      values = await emitter.emit('foo', 'bar');
+      values = await emitter.emitParallel('foo', 'bar');
       assert(values.length === 1);
       assert(values[0] === 'bar');
 
       unsubcribe();
 
-      values = await emitter.emit('foo', 'bar');
+      values = await emitter.emitParallel('foo', 'bar');
       assert(values.length === 0);
       assert(values[0] === undefined);
     });
@@ -176,11 +176,11 @@ describe('carrack', () => {
 
       emitter.subscribe('foo', (action) => action, true);
       let values;
-      values = await emitter.emit('foo', 'bar');
+      values = await emitter.emitParallel('foo', 'bar');
       assert(values.length === 1);
       assert(values[0] === 'bar');
 
-      values = await emitter.emit('foo', 'bar');
+      values = await emitter.emitParallel('foo', 'bar');
       assert(values.length === 0);
       assert(values[0] === undefined);
     });
@@ -194,7 +194,7 @@ describe('carrack', () => {
         emitter.once('foo', listener);
         emitter.removeListener('foo', listener);
 
-        const values = await emitter.emit('foo');
+        const values = await emitter.emitParallel('foo');
         assert(values.length === 0);
         assert(values[0] === undefined);
       });

@@ -34,15 +34,13 @@ $ npm install carrack --save
 API
 ---
 
-class `AsyncEmitter`
+class `AsyncEmitter` extends [EventEmitter](https://nodejs.org/api/events.html)
 ---
 
-return a class that inherits the [EventEmitter](https://nodejs.org/api/events.html)
-
-`.emit(event[, arg1, arg2...])` / `.emitParallel` -> `Promise<values>`
+`.emitParallel(event[, arg1, arg2...])` -> `Promise<values>`
 ---
 
-`.emit` is receive the return value of listeners asynchronously using [Promise.all](http://bluebirdjs.com/docs/api/promise.all.html).
+run the listeners in parallel using [Promise.all](http://bluebirdjs.com/docs/api/promise.all.html).
 
 ```js
 import AsyncEmitter from 'carrack';
@@ -52,7 +50,7 @@ new AsyncEmitter()
   .on('foo', (action) => new Promise((resolve) => {
     setTimeout(() => resolve(action));
   }))
-  .emit('foo', 'bar')
+  .emitParallel('foo', 'bar')
   .then(console.log.bind(console)); // ['bar', 'bar']
 ```
 
@@ -65,14 +63,14 @@ new AsyncEmitter()
   .on('foo', () => new Promise(() => {
     throw new Error('boop');
   }))
-  .emit('foo')
+  .emitParallel('foo')
   .catch(console.log.bind(console)); // [Error: beep]
 ```
 
 `.emitSerial(event[, arg1, arg2...])` -> `Promise<values>`
 ---
 
-run the listener in serial.
+run the listeners in serial.
 if listener returned the exception, will not be executed later listener.
 
 ```js

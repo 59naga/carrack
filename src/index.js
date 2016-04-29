@@ -13,9 +13,6 @@ export default class AsyncEmitter extends EventEmitter {
   * @param {any} arguments - a arguments pass to listeners
   * @returns {promise<any>} - the return value of listeners
   */
-  emit(...args) {
-    return this.emitParallel(...args);
-  }
   emitParallel(event, ...args) {
     const promises = [];
 
