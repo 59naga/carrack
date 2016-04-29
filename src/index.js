@@ -70,7 +70,7 @@ export default class AsyncEmitter extends EventEmitter {
   * @returns {promise<any>} - the return value of listeners
   */
   emitReduce(event, ...args) {
-    return this.emitReduceRun(false, event, args);
+    return this.emitReduceRun(event, args);
   }
 
   /**
@@ -82,19 +82,19 @@ export default class AsyncEmitter extends EventEmitter {
   * @returns {promise<any>} - the return value of listeners
   */
   emitReduceRight(event, ...args) {
-    return this.emitReduceRun(true, event, args);
+    return this.emitReduceRun(event, args, true);
   }
 
   /**
   * emitReduce/emitReduceRight common processing
   *
   * @method emitReduceRun
-  * @param {boolean} inverse - if true, execute listner in inverse
   * @param {string} event - a event name
   * @param {any[]} args - a arguments pass to first listener
+  * @param {boolean} [inverse=false] - if true, execute listner in inverse
   * @returns {any[]} values - the return value of last listener
   */
-  emitReduceRun(inverse, event, args) {
+  emitReduceRun(event, args, inverse = false) {
     const listeners = inverse ? this.listeners(event).reverse() : this.listeners(event);
     return listeners.reduce(
       (promise, listener) => promise.then((prevArgs) => {
