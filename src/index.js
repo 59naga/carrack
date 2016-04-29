@@ -7,11 +7,12 @@ export default class AsyncEmitter extends EventEmitter {
   /**
   * run the listener as Promise
   *
+  * @method executeListener
   * @param {function} listener - a code block
   * @param {any[]} args - a event arguments
   * @returns {promise} - the return value or exception
   */
-  toPromise(listener, args) {
+  executeListener(listener, args) {
     try {
       return Promise.resolve(listener(...args));
     } catch (error) {
@@ -32,7 +33,7 @@ export default class AsyncEmitter extends EventEmitter {
     const promises = [];
 
     this.listeners(event).forEach(listener => {
-      promises.push(this.toPromise(listener, args));
+      promises.push(this.executeListener(listener, args));
     });
 
     return Promise.all(promises);
@@ -49,7 +50,7 @@ export default class AsyncEmitter extends EventEmitter {
   emitSerial(event, ...args) {
     return this.listeners(event).reduce(
       (promise, listener) => promise.then((values) =>
-        this.toPromise(listener, args).then(
+        this.executeListener(listener, args).then(
           (value) => {
             values.push(value);
             return values;
@@ -98,7 +99,7 @@ export default class AsyncEmitter extends EventEmitter {
     return listeners.reduce(
       (promise, listener) => promise.then((prevArgs) => {
         const currentArgs = prevArgs instanceof Array ? prevArgs : [prevArgs];
-        return this.toPromise(listener, currentArgs);
+        return this.executeListener(listener, currentArgs);
       }),
       Promise.resolve(args),
     );
