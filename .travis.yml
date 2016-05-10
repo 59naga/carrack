@@ -38,7 +38,7 @@ env:
 
 # Npm publish options
 before_deploy:
-  - npm run compile
+  - npm run build
 deploy:
   skip_cleanup: true # keep the devDependencies
   provider: npm
