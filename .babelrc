@@ -4,6 +4,7 @@
     "stage-1"
   ],
   "plugins": [
+    "transform-bluebird",
     "add-module-exports"
   ],
   "env": {

@@ -1,6 +1,5 @@
 // dependencies
 import { EventEmitter } from 'events';
-import Promise from 'bluebird';
 
 // @class AsyncEmitter
 export default class AsyncEmitter extends EventEmitter {
