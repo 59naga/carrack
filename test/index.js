@@ -194,6 +194,58 @@ describe('carrack', () => {
     });
   });
 
+  describe('.setConcurrency', () => {
+    const delay = 50;
+    const delayListener = (msec) => () => new Promise(resolve => {
+      setTimeout(() => resolve(Date.now()), msec);
+    });
+
+    it('should set max concurrency in the constructor', async () => {
+      const emitter = new AsyncEmitter(2);
+      emitter.on('foo', delayListener(delay));
+      emitter.on('foo', delayListener(delay));
+      emitter.on('foo', delayListener(delay));
+      emitter.on('foo', delayListener(delay));
+      emitter.on('foo', delayListener(delay));
+
+      const [a, b, c, d, e] = await emitter.emitParallel('foo');
+      assert(b - a < delay);
+      assert(c - b >= delay);
+      assert(d - c < delay);
+      assert(e - d >= delay);
+    });
+
+    it('the limit should be managed by an instance', async () => {
+      const emitter = new AsyncEmitter(2);
+      emitter.on('foo', delayListener(delay));
+
+      const [[a], [b], [c], [d], [e]] = await Promise.all([
+        emitter.emitSerial('foo'),
+        emitter.emitSerial('foo'),
+        emitter.emitSerial('foo'),
+        emitter.emitSerial('foo'),
+        emitter.emitSerial('foo'),
+      ]);
+      assert(b - a < delay);
+      assert(c - b >= delay);
+      assert(d - c < delay);
+      assert(e - d >= delay);
+    });
+
+    it('should the maximum number that changed are applied', async () => {
+      const emitter = new AsyncEmitter(1);
+      emitter.on('foo', delayListener(delay));
+      emitter.on('foo', delayListener(delay));
+
+      const [[a, b], [c, d]] = await Promise.all([
+        emitter.emitParallel('foo'),
+        emitter.setConcurrency(2).emitParallel('foo'),
+      ]);
+      assert(b - a >= delay);
+      assert(d - c < delay);
+    });
+  });
+
   describe('issues (regression test)', () => {
     describe('.once', () => {
       it('#3: always the listener should be stopped at the removeListener', async () => {

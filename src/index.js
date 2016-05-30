@@ -1,8 +1,32 @@
 // dependencies
 import { EventEmitter } from 'events';
+import throat from 'throat';
 
 // @class AsyncEmitter
 export default class AsyncEmitter extends EventEmitter {
+  constructor(concurrency = null) {
+    super();
+    if (concurrency >= 1) {
+      this.setConcurrency(concurrency);
+    }
+  }
+
+  /**
+  * reset concurrency of instance
+  *
+  * @method setConcurrency
+  * @param {number} [max=null] - a number of maximum concurrency
+  * @returns {asyncEmitter} this
+  */
+  setConcurrency(max = null) {
+    if (max >= 1) {
+      this.manager = throat(Promise)(max);
+    } else {
+      this.manager = null;
+    }
+    return this;
+  }
+
   /**
   * run the listener as Promise
   *
@@ -13,6 +37,9 @@ export default class AsyncEmitter extends EventEmitter {
   */
   executeListener(listener, args) {
     try {
+      if (this.manager) {
+        return this.manager(() => listener(...args));
+      }
       return Promise.resolve(listener(...args));
     } catch (error) {
       return Promise.reject(error);

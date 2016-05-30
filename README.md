@@ -129,6 +129,46 @@ emitter
   });
 ```
 
+`.setConcurrency(max)`
+---
+to limit the maximum number of concurrent execution of the listener of this instance.
+this limit applies to the above-mentioned ".emit*" method (doesn't apply to `.emit`).
+
+```js
+(async () => {
+  const delayListener = () => new Promise(resolve => {
+    setTimeout(() => resolve(Date.now()), 100);
+  });
+  const emitter = new AsyncEmitter(1) // first argument `.setConcurrency` alias
+  .on('foo', delayListener)
+  .on('foo', delayListener)
+  .on('foo', delayListener)
+  .on('foo', delayListener)
+  .on('foo', delayListener);
+
+  console.log(await emitter.emitParallel('foo'));
+  // [ 1464602000100,
+  //   1464602000200,
+  //   1464602000300,
+  //   1464602000400,
+  //   1464602000500 ]
+
+  console.log(await emitter.setConcurrency(2).emitParallel('foo'));
+  // [ 1464602000600,
+  //   1464602000600,
+  //   1464602000700,
+  //   1464602000700,
+  //   1464602000800 ]
+
+  console.log(await emitter.setConcurrency(null).emitParallel('foo'));
+  // [ 1464602000800,
+  //   1464602000800,
+  //   1464602000800,
+  //   1464602000800,
+  //   1464602000800 ]
+})();
+```
+
 `.subscribe(event, listener, once = false)` => `unsubscribe()`
 ---
 alias for `emitter.on` and `emitter.removeListener`.
