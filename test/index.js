@@ -195,29 +195,30 @@ describe('carrack', () => {
   });
 
   describe('.setConcurrency', () => {
-    const delay = 50;
-    const delayListener = (msec) => () => new Promise(resolve => {
-      setTimeout(() => resolve(Date.now()), msec);
+    const delay = 100;
+    const delayTolerance = 10;
+    const delayListener = () => new Promise(resolve => {
+      setTimeout(() => resolve(Date.now()), delay);
     });
 
     it('should set max concurrency in the constructor', async () => {
       const emitter = new AsyncEmitter(2);
-      emitter.on('foo', delayListener(delay));
-      emitter.on('foo', delayListener(delay));
-      emitter.on('foo', delayListener(delay));
-      emitter.on('foo', delayListener(delay));
-      emitter.on('foo', delayListener(delay));
+      emitter.on('foo', delayListener);
+      emitter.on('foo', delayListener);
+      emitter.on('foo', delayListener);
+      emitter.on('foo', delayListener);
+      emitter.on('foo', delayListener);
 
       const [a, b, c, d, e] = await emitter.emitParallel('foo');
-      assert(b - a < delay);
-      assert(c - b >= delay);
-      assert(d - c < delay);
-      assert(e - d >= delay);
+      assert(b - a < delay + delayTolerance);
+      assert(c - b >= delay - delayTolerance);
+      assert(d - c < delay + delayTolerance);
+      assert(e - d >= delay - delayTolerance);
     });
 
     it('the limit should be managed by an instance', async () => {
       const emitter = new AsyncEmitter(2);
-      emitter.on('foo', delayListener(delay));
+      emitter.on('foo', delayListener);
 
       const [[a], [b], [c], [d], [e]] = await Promise.all([
         emitter.emitSerial('foo'),
@@ -226,23 +227,23 @@ describe('carrack', () => {
         emitter.emitSerial('foo'),
         emitter.emitSerial('foo'),
       ]);
-      assert(b - a < delay);
-      assert(c - b >= delay);
-      assert(d - c < delay);
-      assert(e - d >= delay);
+      assert(b - a < delay + delayTolerance);
+      assert(c - b >= delay - delayTolerance);
+      assert(d - c < delay + delayTolerance);
+      assert(e - d >= delay - delayTolerance);
     });
 
     it('should the maximum number that changed are applied', async () => {
       const emitter = new AsyncEmitter(1);
-      emitter.on('foo', delayListener(delay));
-      emitter.on('foo', delayListener(delay));
+      emitter.on('foo', delayListener);
+      emitter.on('foo', delayListener);
 
       const [[a, b], [c, d]] = await Promise.all([
         emitter.emitParallel('foo'),
         emitter.setConcurrency(2).emitParallel('foo'),
       ]);
-      assert(b - a >= delay);
-      assert(d - c < delay);
+      assert(b - a >= delay - delayTolerance);
+      assert(d - c < delay + delayTolerance);
     });
   });
 
