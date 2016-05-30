@@ -1,6 +1,8 @@
 ---
 extends: airbnb-base
 parser: babel-eslint
+plugins:
+  - async-await
 
 env:
   node: true
@@ -14,3 +16,5 @@ rules:
 
   max-len: 1
   arrow-body-style: 1
+
+  async-await/space-after-async: 2
