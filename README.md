@@ -129,7 +129,7 @@ emitter
   });
 ```
 
-`.setConcurrency(max)`
+`.setConcurrency(max)` -> this
 ---
 to limit the maximum number of concurrent execution of the listener of this instance.
 this limit applies to the above-mentioned ".emit*" method (doesn't apply to `.emit`).
